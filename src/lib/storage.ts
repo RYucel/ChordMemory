@@ -4,17 +4,17 @@
 
 import { AppSettings, Card, Review, Section, Session, Song, TransitionStat } from '../types';
 import { createInitialFsrsState, DEFAULT_FSRS_WEIGHTS } from './fsrs';
-import { computeRomanNumeral } from './parser';
+import { getHardcodedSeedData } from '../data/seedSongs';
 
 const STORAGE_KEYS = {
   SETTINGS: 'akor_bellegi_settings_v1',
-  SONGS: 'akor_bellegi_songs_v1',
-  SECTIONS: 'akor_bellegi_sections_v1',
-  CARDS: 'akor_bellegi_cards_v1',
+  SONGS: 'akor_bellegi_songs_v2',
+  SECTIONS: 'akor_bellegi_sections_v2',
+  CARDS: 'akor_bellegi_cards_v2',
   REVIEWS: 'akor_bellegi_reviews_v1',
   TRANSITIONS: 'akor_bellegi_transitions_v1',
   SESSIONS: 'akor_bellegi_sessions_v1',
-  INITIALIZED: 'akor_bellegi_init_v1',
+  INITIALIZED: 'akor_bellegi_init_v2',
 };
 
 // Default Application Settings
@@ -33,235 +33,27 @@ export const DEFAULT_SETTINGS: AppSettings = {
   fsrsWeights: DEFAULT_FSRS_WEIGHTS,
 };
 
-// Seed Songs Data
-function generateSeedData(): {
-  songs: Song[];
-  sections: Section[];
-  cards: Card[];
-  transitions: TransitionStat[];
-} {
-  const now = Date.now();
-
-  // Song 1: Elfida - Haluk Levent (Turkish Rock Classic)
-  const song1: Song = {
-    id: 'song-elfida',
-    title: 'Elfida',
-    artist: 'Haluk Levent',
-    year: 2004,
-    language: 'TR',
-    key: 'Am',
-    mode: 'minor',
-    capo: 0,
-    tempoBpm: 85,
-    timeSignature: '4/4',
-    tuning: 'E A D G B E',
-    notes: 'Klasik gitar arpej (p-i-m-a-m-i) ritmiyle çalınır.',
-    createdAt: now - 7 * 86400000,
-    lastPlayedAt: now - 86400000,
-  };
-
-  const song1Sections: Section[] = [
-    {
-      id: 'sec-elfida-intro',
-      songId: 'song-elfida',
-      order: 1,
-      label: 'INTRO',
-      bars: 4,
-      lyricCue: 'Gitar Arpej Girişi',
-      chordSequence: [
-        { root: 'A', quality: 'm', beats: 4, fullChord: 'Am', romanNumeral: 'i' },
-        { root: 'D', quality: 'm', beats: 4, fullChord: 'Dm', romanNumeral: 'iv' },
-        { root: 'G', quality: '', beats: 4, fullChord: 'G', romanNumeral: 'VII' },
-        { root: 'C', quality: '', beats: 4, fullChord: 'C', romanNumeral: 'III' },
-      ],
-    },
-    {
-      id: 'sec-elfida-verse',
-      songId: 'song-elfida',
-      order: 2,
-      label: 'VERSE',
-      bars: 8,
-      lyricCue: 'Yüzün geçmişe dönük, gözlerin dolu dolu',
-      chordSequence: [
-        { root: 'A', quality: 'm', beats: 4, fullChord: 'Am', romanNumeral: 'i' },
-        { root: 'D', quality: 'm', beats: 4, fullChord: 'Dm', romanNumeral: 'iv' },
-        { root: 'G', quality: '', beats: 4, fullChord: 'G', romanNumeral: 'VII' },
-        { root: 'C', quality: '', beats: 4, fullChord: 'C', romanNumeral: 'III' },
-        { root: 'F', quality: '', beats: 4, fullChord: 'F', romanNumeral: 'VI' },
-        { root: 'D', quality: 'm', beats: 4, fullChord: 'Dm', romanNumeral: 'iv' },
-        { root: 'E', quality: '7', beats: 8, fullChord: 'E7', romanNumeral: 'V7' },
-      ],
-    },
-    {
-      id: 'sec-elfida-chorus',
-      songId: 'song-elfida',
-      order: 3,
-      label: 'CHORUS',
-      bars: 8,
-      lyricCue: 'Elfida, beni bırakıp gitme',
-      chordSequence: [
-        { root: 'A', quality: 'm', beats: 4, fullChord: 'Am', romanNumeral: 'i' },
-        { root: 'D', quality: 'm', beats: 4, fullChord: 'Dm', romanNumeral: 'iv' },
-        { root: 'G', quality: '', beats: 4, fullChord: 'G', romanNumeral: 'VII' },
-        { root: 'C', quality: '', beats: 4, fullChord: 'C', romanNumeral: 'III' },
-        { root: 'F', quality: '', beats: 4, fullChord: 'F', romanNumeral: 'VI' },
-        { root: 'E', quality: '7', beats: 4, fullChord: 'E7', romanNumeral: 'V7' },
-        { root: 'A', quality: 'm', beats: 8, fullChord: 'Am', romanNumeral: 'i' },
-      ],
-    },
-  ];
-
-  // Song 2: Dust in the Wind - Kansas (80s Acoustic Fingerstyle Classic)
-  const song2: Song = {
-    id: 'song-dust-wind',
-    title: 'Dust in the Wind',
-    artist: 'Kansas',
-    year: 1977,
-    language: 'EN',
-    key: 'C',
-    mode: 'major',
-    capo: 0,
-    tempoBpm: 94,
-    timeSignature: '4/4',
-    tuning: 'E A D G B E',
-    notes: 'Travis picking fingerstyle pattern.',
-    createdAt: now - 5 * 86400000,
-    lastPlayedAt: now - 2 * 86400000,
-  };
-
-  const song2Sections: Section[] = [
-    {
-      id: 'sec-dust-intro',
-      songId: 'song-dust-wind',
-      order: 1,
-      label: 'INTRO',
-      bars: 6,
-      lyricCue: 'Fingerstyle Travis Picking Hook',
-      chordSequence: [
-        { root: 'C', quality: '', beats: 4, fullChord: 'C', romanNumeral: 'I' },
-        { root: 'C', quality: 'maj7', beats: 4, fullChord: 'Cmaj7', romanNumeral: 'Imaj7' },
-        { root: 'C', quality: 'add9', beats: 4, fullChord: 'Cadd9', romanNumeral: 'Iadd9' },
-        { root: 'A', quality: 'm', beats: 4, fullChord: 'Am', romanNumeral: 'vi' },
-        { root: 'A', quality: 'sus2', beats: 4, fullChord: 'Asus2', romanNumeral: 'visus2' },
-        { root: 'G', quality: '', bass: 'B', beats: 4, fullChord: 'G/B', romanNumeral: 'V/iii' },
-      ],
-    },
-    {
-      id: 'sec-dust-verse',
-      songId: 'song-dust-wind',
-      order: 2,
-      label: 'VERSE',
-      bars: 8,
-      lyricCue: 'I close my eyes, only for a moment and the moment\'s gone',
-      chordSequence: [
-        { root: 'C', quality: '', beats: 4, fullChord: 'C', romanNumeral: 'I' },
-        { root: 'G', quality: '', bass: 'B', beats: 4, fullChord: 'G/B', romanNumeral: 'V/iii' },
-        { root: 'A', quality: 'm', beats: 4, fullChord: 'Am', romanNumeral: 'vi' },
-        { root: 'G', quality: '', beats: 4, fullChord: 'G', romanNumeral: 'V' },
-        { root: 'D', quality: 'm', beats: 4, fullChord: 'Dm', romanNumeral: 'ii' },
-        { root: 'A', quality: 'm', beats: 4, fullChord: 'Am', romanNumeral: 'vi' },
-        { root: 'G', quality: '', beats: 8, fullChord: 'G', romanNumeral: 'V' },
-      ],
-    },
-  ];
-
-  // Song 3: Gönül - Fikret Kızılok (Turkish Acoustic Ballad)
-  const song3: Song = {
-    id: 'song-gonul',
-    title: 'Gönül',
-    artist: 'Fikret Kızılok',
-    year: 1983,
-    language: 'TR',
-    key: 'Em',
-    mode: 'minor',
-    capo: 2,
-    tempoBpm: 76,
-    timeSignature: '4/4',
-    tuning: 'E A D G B E',
-    notes: 'Kapo 2. frette (Görünürde Dm). Sakin ve içli çalınır.',
-    createdAt: now - 3 * 86400000,
-    lastPlayedAt: now - 3 * 86400000,
-  };
-
-  const song3Sections: Section[] = [
-    {
-      id: 'sec-gonul-verse',
-      songId: 'song-gonul',
-      order: 1,
-      label: 'VERSE',
-      bars: 8,
-      lyricCue: 'Gönül sen bu hallere düşecek adam mıydın?',
-      chordSequence: [
-        { root: 'E', quality: 'm', beats: 4, fullChord: 'Em', romanNumeral: 'i' },
-        { root: 'A', quality: 'm', beats: 4, fullChord: 'Am', romanNumeral: 'iv' },
-        { root: 'D', quality: '', beats: 4, fullChord: 'D', romanNumeral: 'VII' },
-        { root: 'G', quality: '', beats: 4, fullChord: 'G', romanNumeral: 'III' },
-        { root: 'C', quality: '', beats: 4, fullChord: 'C', romanNumeral: 'VI' },
-        { root: 'B', quality: '7', beats: 8, fullChord: 'B7', romanNumeral: 'V7' },
-      ],
-    },
-  ];
-
-  const allSongs = [song1, song2, song3];
-  const allSections = [...song1Sections, ...song2Sections, ...song3Sections];
-
-  // Generate Cards for each Section
-  const cards: Card[] = [];
-  allSections.forEach((sec, idx) => {
-    // Basic Sequence Recall Card
-    const c1: Card = {
-      id: `card-${sec.id}-seq`,
-      sectionId: sec.id,
-      songId: sec.songId,
-      type: 'SEQUENCE_RECALL',
-      cueLevel: idx % 2 === 0 ? 1 : 2, // L1 or L2 cue
-      fsrsState: createInitialFsrsState(),
-      createdAt: now - idx * 3600000,
-    };
-    c1.fsrsState.dueAt = now - 1000; // Due right now
-    cards.push(c1);
-
-    // Roman Numeral Analysis Card
-    const c2: Card = {
-      id: `card-${sec.id}-roman`,
-      sectionId: sec.id,
-      songId: sec.songId,
-      type: 'ROMAN_ANALYSIS',
-      cueLevel: 3,
-      fsrsState: createInitialFsrsState(),
-      createdAt: now - idx * 3600000,
-    };
-    c2.fsrsState.dueAt = now - 2000;
-    cards.push(c2);
-  });
-
-  // Seed Transition Matrix
-  const transitions: TransitionStat[] = [
-    { id: 'Am-Dm', fromChord: 'Am', toChord: 'Dm', attempts: 18, cleanCount: 16, avgMs: 820, lastDrilledAt: now - 86400000 },
-    { id: 'Dm-G', fromChord: 'Dm', toChord: 'G', attempts: 15, cleanCount: 12, avgMs: 1100, lastDrilledAt: now - 86400000 },
-    { id: 'G-C', fromChord: 'G', toChord: 'C', attempts: 20, cleanCount: 19, avgMs: 750, lastDrilledAt: now - 2 * 86400000 },
-    { id: 'C-F', fromChord: 'C', toChord: 'F', attempts: 25, cleanCount: 14, avgMs: 1450, lastDrilledAt: now - 86400000 }, // Weak pair
-    { id: 'F-E7', fromChord: 'F', toChord: 'E7', attempts: 22, cleanCount: 13, avgMs: 1320, lastDrilledAt: now - 86400000 }, // Weak pair
-    { id: 'E7-Am', fromChord: 'E7', toChord: 'Am', attempts: 30, cleanCount: 28, avgMs: 690, lastDrilledAt: now - 86400000 },
-    { id: 'Em-Am', fromChord: 'Em', toChord: 'Am', attempts: 10, cleanCount: 8, avgMs: 950, lastDrilledAt: now - 3 * 86400000 },
-    { id: 'C-G/B', fromChord: 'C', toChord: 'G/B', attempts: 14, cleanCount: 12, avgMs: 880, lastDrilledAt: now - 2 * 86400000 },
-  ];
-
-  return { songs: allSongs, sections: allSections, cards, transitions };
-}
-
 /**
  * Initialize storage with default settings & seed data if empty
  */
 export function initializeStorage(): void {
   try {
     if (!localStorage.getItem(STORAGE_KEYS.INITIALIZED)) {
-      const seed = generateSeedData();
+      const seed = getHardcodedSeedData();
+      const defaultTransitions: TransitionStat[] = [
+        { id: 'Am-Dm', fromChord: 'Am', toChord: 'Dm', attempts: 18, cleanCount: 16, avgMs: 820, lastDrilledAt: Date.now() - 86400000 },
+        { id: 'Dm-G', fromChord: 'Dm', toChord: 'G', attempts: 15, cleanCount: 12, avgMs: 1100, lastDrilledAt: Date.now() - 86400000 },
+        { id: 'G-C', fromChord: 'G', toChord: 'C', attempts: 20, cleanCount: 19, avgMs: 750, lastDrilledAt: Date.now() - 2 * 86400000 },
+        { id: 'C-F', fromChord: 'C', toChord: 'F', attempts: 25, cleanCount: 14, avgMs: 1450, lastDrilledAt: Date.now() - 86400000 },
+        { id: 'F-E7', fromChord: 'F', toChord: 'E7', attempts: 22, cleanCount: 13, avgMs: 1320, lastDrilledAt: Date.now() - 86400000 },
+        { id: 'E7-Am', fromChord: 'E7', toChord: 'Am', attempts: 30, cleanCount: 28, avgMs: 690, lastDrilledAt: Date.now() - 86400000 },
+      ];
+
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(DEFAULT_SETTINGS));
       localStorage.setItem(STORAGE_KEYS.SONGS, JSON.stringify(seed.songs));
       localStorage.setItem(STORAGE_KEYS.SECTIONS, JSON.stringify(seed.sections));
       localStorage.setItem(STORAGE_KEYS.CARDS, JSON.stringify(seed.cards));
-      localStorage.setItem(STORAGE_KEYS.TRANSITIONS, JSON.stringify(seed.transitions));
+      localStorage.setItem(STORAGE_KEYS.TRANSITIONS, JSON.stringify(defaultTransitions));
       localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify([]));
       localStorage.setItem(STORAGE_KEYS.SESSIONS, JSON.stringify([]));
       localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
@@ -290,9 +82,22 @@ export function loadSongs(): Song[] {
   initializeStorage();
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.SONGS);
-    return raw ? JSON.parse(raw) : [];
+    const storedSongs: Song[] = raw ? JSON.parse(raw) : [];
+    const seed = getHardcodedSeedData();
+
+    // Ensure all hardcoded seed songs exist in local storage
+    const storedIds = new Set(storedSongs.map((s) => s.id));
+    const missingSeedSongs = seed.songs.filter((s) => !storedIds.has(s.id));
+
+    if (missingSeedSongs.length > 0) {
+      const mergedSongs = [...storedSongs, ...missingSeedSongs];
+      saveSongs(mergedSongs);
+      return mergedSongs;
+    }
+
+    return storedSongs;
   } catch {
-    return [];
+    return getHardcodedSeedData().songs;
   }
 }
 
@@ -304,9 +109,21 @@ export function loadSections(): Section[] {
   initializeStorage();
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.SECTIONS);
-    return raw ? JSON.parse(raw) : [];
+    const storedSections: Section[] = raw ? JSON.parse(raw) : [];
+    const seed = getHardcodedSeedData();
+
+    const storedIds = new Set(storedSections.map((s) => s.id));
+    const missingSeedSections = seed.sections.filter((s) => !storedIds.has(s.id));
+
+    if (missingSeedSections.length > 0) {
+      const mergedSections = [...storedSections, ...missingSeedSections];
+      saveSections(mergedSections);
+      return mergedSections;
+    }
+
+    return storedSections;
   } catch {
-    return [];
+    return getHardcodedSeedData().sections;
   }
 }
 
@@ -318,9 +135,21 @@ export function loadCards(): Card[] {
   initializeStorage();
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.CARDS);
-    return raw ? JSON.parse(raw) : [];
+    const storedCards: Card[] = raw ? JSON.parse(raw) : [];
+    const seed = getHardcodedSeedData();
+
+    const storedIds = new Set(storedCards.map((c) => c.id));
+    const missingSeedCards = seed.cards.filter((c) => !storedIds.has(c.id));
+
+    if (missingSeedCards.length > 0) {
+      const mergedCards = [...storedCards, ...missingSeedCards];
+      saveCards(mergedCards);
+      return mergedCards;
+    }
+
+    return storedCards;
   } catch {
-    return [];
+    return getHardcodedSeedData().cards;
   }
 }
 
