@@ -1,0 +1,36 @@
+{
+  "name": "Akor Belleği - Gitar & Akor Asistanı",
+  "short_name": "AkorBelleği",
+  "description": "Gitar ve şarkı repertuarı için FSRS aralıklı tekrar algoritması tabanlı akor hafıza asistanı.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F0F11",
+  "theme_color": "#0F0F11",
+  "categories": ["music", "education", "utilities"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

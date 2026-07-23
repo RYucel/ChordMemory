@@ -1,0 +1,6 @@
+{
+  "name": "Akor Belleği",
+  "description": "Klasik gitar çalanlar için FSRS tabanlı aralıklı tekrar ve akor hafıza antrenörü uygulaması.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

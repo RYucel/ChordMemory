@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#161618"/>
+      <stop offset="100%" stop-color="#080809"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E5AB"/>
+      <stop offset="30%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#AA7C11"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded card -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)"/>
+  <rect width="504" height="504" x="4" y="4" rx="106" fill="none" stroke="#2A2A2C" stroke-width="4"/>
+
+  <!-- Subtle acoustic sound hole rings -->
+  <circle cx="256" cy="230" r="140" fill="none" stroke="#D4AF37" stroke-opacity="0.1" stroke-width="2"/>
+  <circle cx="256" cy="230" r="110" fill="none" stroke="#D4AF37" stroke-opacity="0.15" stroke-width="1.5"/>
+
+  <!-- Guitar Pick Graphic -->
+  <path d="M 256 120 
+           C 340 120, 390 170, 370 260 
+           C 350 350, 275 410, 256 420 
+           C 237 410, 162 350, 142 260 
+           C 122 170, 172 120, 256 120 Z" 
+        fill="url(#goldGrad)" 
+        filter="url(#shadow)"/>
+
+  <!-- Inner Pick Line Detail -->
+  <path d="M 256 138 
+           C 325 138, 368 180, 350 258 
+           C 332 338, 270 388, 256 398 
+           C 242 388, 180 338, 162 258 
+           C 144 180, 187 138, 256 138 Z" 
+        fill="none" 
+        stroke="#161618" 
+        stroke-opacity="0.3" 
+        stroke-width="3"/>
+
+  <!-- Monogram / Chord Icon "Fm7" or Guitar Strings -->
+  <!-- Strings -->
+  <line x1="226" y1="180" x2="226" y2="340" stroke="#0F0F11" stroke-opacity="0.4" stroke-width="2"/>
+  <line x1="246" y1="175" x2="246" y2="360" stroke="#0F0F11" stroke-opacity="0.4" stroke-width="2.5"/>
+  <line x1="266" y1="175" x2="266" y2="360" stroke="#0F0F11" stroke-opacity="0.4" stroke-width="2.5"/>
+  <line x1="286" y1="180" x2="286" y2="340" stroke="#0F0F11" stroke-opacity="0.4" stroke-width="2"/>
+
+  <!-- Gold Chord Letter in middle -->
+  <text x="256" y="270" 
+        font-family="Georgia, serif" 
+        font-size="64" 
+        font-weight="bold" 
+        font-style="italic" 
+        fill="#0F0F11" 
+        text-anchor="middle" 
+        dominant-baseline="central">Fm</text>
+</svg>
